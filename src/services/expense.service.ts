@@ -273,6 +273,93 @@ export class ExpenseService {
         );
     }
 
+    async getFilteredExpenses(
+        userId: string,
+        groupId: string,
+        filters: {
+            from?: string;
+            to?: string;
+            participantId?: string;
+            minAmount?: string;
+            maxAmount?: string;
+            q?: string;
+        }
+    ) {
+        await assertGroupOwnership(userId, groupId);
+
+        // Validate and parse filters
+        const parsedFilters: {
+            from?: Date;
+            to?: Date;
+            participantId?: string;
+            minAmount?: number;
+            maxAmount?: number;
+            q?: string;
+        } = {};
+
+        // Validate and parse date filters
+        if (filters.from) {
+            const fromDate = new Date(filters.from);
+            if (isNaN(fromDate.getTime())) {
+                throw new ValidationError('Invalid from date format. Use ISO 8601 format.');
+            }
+            parsedFilters.from = fromDate;
+        }
+
+        if (filters.to) {
+            const toDate = new Date(filters.to);
+            if (isNaN(toDate.getTime())) {
+                throw new ValidationError('Invalid to date format. Use ISO 8601 format.');
+            }
+            parsedFilters.to = toDate;
+        }
+
+        // Validate participantId (basic UUID format check)
+        if (filters.participantId) {
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+            if (!uuidRegex.test(filters.participantId)) {
+                throw new ValidationError('Invalid participantId format');
+            }
+            parsedFilters.participantId = filters.participantId;
+        }
+
+        // Validate and parse amount filters
+        if (filters.minAmount !== undefined) {
+            const minAmount = parseInt(filters.minAmount, 10);
+            if (isNaN(minAmount) || minAmount < 0) {
+                throw new ValidationError('minAmount must be a non-negative integer');
+            }
+            parsedFilters.minAmount = minAmount;
+        }
+
+        if (filters.maxAmount !== undefined) {
+            const maxAmount = parseInt(filters.maxAmount, 10);
+            if (isNaN(maxAmount) || maxAmount < 0) {
+                throw new ValidationError('maxAmount must be a non-negative integer');
+            }
+            parsedFilters.maxAmount = maxAmount;
+        }
+
+        // Validate amount range
+        if (
+            parsedFilters.minAmount !== undefined &&
+            parsedFilters.maxAmount !== undefined &&
+            parsedFilters.minAmount > parsedFilters.maxAmount
+        ) {
+            throw new ValidationError('minAmount cannot be greater than maxAmount');
+        }
+
+        // Validate text search
+        if (filters.q) {
+            if (filters.q.length > 200) {
+                throw new ValidationError('Search query must not exceed 200 characters');
+            }
+            parsedFilters.q = filters.q;
+        }
+
+        return expenseRepository.findByGroupIdFiltered(groupId, parsedFilters);
+    }
+
     async deleteExpense(userId: string, expenseId: string) {
         const expense = await expenseRepository.findById(expenseId);
         if (!expense) {

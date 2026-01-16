@@ -5,6 +5,7 @@ import groupRoutes from './routes/group.routes';
 import participantRoutes from './routes/participant.routes';
 import expenseRoutes from './routes/expense.routes';
 import balanceRoutes from './routes/balance.routes';
+import summaryRoutes from './routes/summary.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/api/groups', groupRoutes);
 app.use('/api', participantRoutes); // Mounted at /api because paths are mixed (/groups/..., /participants/...)
 app.use('/api', expenseRoutes); // Mounted at /api because paths are mixed (/groups/..., /expenses/...)
 app.use('/api', balanceRoutes); // Mounted at /api for /groups/:groupId/balances
+app.use('/api', summaryRoutes); // Mounted at /api for /groups/:groupId/summary
 
 app.use(errorHandler);
 

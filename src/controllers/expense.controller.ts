@@ -31,13 +31,35 @@ export class ExpenseController {
         try {
             const userId = req.userId!;
             const { groupId } = req.params;
+            const { from, to, participantId, minAmount, maxAmount, q } = req.query;
 
-            const expenses = await expenseService.getGroupExpenses(userId, groupId);
+            // If any filters provided, use filtered query
+            if (from || to || participantId || minAmount || maxAmount || q) {
+                const expenses = await expenseService.getFilteredExpenses(userId, groupId, {
+                    from: from as string,
+                    to: to as string,
+                    participantId: participantId as string,
+                    minAmount: minAmount as string,
+                    maxAmount: maxAmount as string,
+                    q: q as string,
+                });
 
-            res.status(200).json({
-                success: true,
-                data: { expenses },
-            });
+                res.status(200).json({
+                    success: true,
+                    data: {
+                        expenses,
+                        filters: { from, to, participantId, minAmount, maxAmount, q },
+                    },
+                });
+            } else {
+                // No filters, use standard query
+                const expenses = await expenseService.getGroupExpenses(userId, groupId);
+
+                res.status(200).json({
+                    success: true,
+                    data: { expenses },
+                });
+            }
         } catch (error) {
             next(error);
         }
