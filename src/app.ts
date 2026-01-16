@@ -1,0 +1,24 @@
+import express, { Request, Response } from 'express';
+import cors from 'cors';
+import authRoutes from './routes/auth.routes';
+import { errorHandler } from './middlewares/errorHandler';
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/health', (_req: Request, res: Response) => {
+    res.status(200).json({
+        success: true,
+        message: 'Server is healthy',
+        timestamp: new Date().toISOString(),
+    });
+});
+
+app.use('/api/auth', authRoutes);
+
+app.use(errorHandler);
+
+export default app;
