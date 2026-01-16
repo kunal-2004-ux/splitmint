@@ -23,6 +23,20 @@ model Group {
   ownerId   String   @map("owner_id")
   createdAt DateTime @default(now()) @map("created_at")
   owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  participants Participant[]
 
   @@map("groups")
+}
+
+model Participant {
+  id        String   @id @default(uuid())
+  name      String
+  color     String?
+  groupId   String   @map("group_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, name])
+  @@map("participants")
 }
