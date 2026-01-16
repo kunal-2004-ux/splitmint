@@ -24,6 +24,7 @@ model Group {
   createdAt DateTime @default(now()) @map("created_at")
   owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   participants Participant[]
+  expenses  Expense[]
 
   @@map("groups")
 }
@@ -35,8 +36,45 @@ model Participant {
   groupId   String   @map("group_id")
   createdAt DateTime @default(now()) @map("created_at")
 
-  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group            Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  paidExpenses     Expense[]      @relation("PayerExpenses")
+  expenseSplits    ExpenseSplit[]
 
   @@unique([groupId, name])
   @@map("participants")
+}
+
+enum SplitMode {
+  EQUAL
+  CUSTOM
+  PERCENTAGE
+}
+
+model Expense {
+  id          String     @id @default(uuid())
+  groupId     String     @map("group_id")
+  payerId     String     @map("payer_id")
+  amount      Int
+  description String
+  date        DateTime
+  splitMode   SplitMode  @map("split_mode")
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  group       Group            @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  payer       Participant      @relation("PayerExpenses", fields: [payerId], references: [id])
+  splits      ExpenseSplit[]
+
+  @@map("expenses")
+}
+
+model ExpenseSplit {
+  id            String   @id @default(uuid())
+  expenseId     String   @map("expense_id")
+  participantId String   @map("participant_id")
+  shareAmount   Int      @map("share_amount")
+
+  expense       Expense     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  participant   Participant @relation(fields: [participantId], references: [id])
+
+  @@map("expense_splits")
 }
