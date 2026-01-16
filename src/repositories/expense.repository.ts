@@ -200,6 +200,22 @@ export class ExpenseRepository {
         });
     }
 
+    async getBalanceData(groupId: string) {
+        return prisma.expense.findMany({
+            where: { groupId },
+            select: {
+                payerId: true,
+                amount: true,
+                splits: {
+                    select: {
+                        participantId: true,
+                        shareAmount: true,
+                    },
+                },
+            },
+        });
+    }
+
     async delete(id: string) {
         return prisma.expense.delete({
             where: { id },
