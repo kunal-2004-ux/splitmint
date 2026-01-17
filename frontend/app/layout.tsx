@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "Split expenses intelligently with AI-powered insights",
 };
 
+import { AuthProvider } from "@/context/auth-context";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
