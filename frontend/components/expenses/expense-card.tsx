@@ -33,34 +33,40 @@ export function ExpenseCard({ expense, participantMap }: ExpenseCardProps) {
     const formattedDate = dateObj.toLocaleDateString('en-IN', {
         day: 'numeric',
         month: 'short',
-        year: 'numeric'
     });
 
     return (
-        <Card className="hover:bg-muted/30 transition-colors border-border/40">
-            <CardContent className="p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg">{expense.description}</h3>
+        <Card className="group hover:shadow-md hover:border-primary/20 transition-all duration-200 border-border/40 bg-card/50 backdrop-blur-sm">
+            <CardContent className="p-4 sm:p-5 flex items-center justify-between gap-4">
+                {/* Left: Icon & Description */}
+                <div className="flex items-start gap-4 flex-1">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-primary/20 transition-colors">
+                        <span className="text-primary font-bold text-lg">
+                            {expense.description.charAt(0).toUpperCase()}
+                        </span>
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                            <User className="h-3 w-3" />
-                            <span>Paid by <span className="font-medium text-foreground">{payerName}</span></span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <CalendarDays className="h-3 w-3" />
-                            <span>{formattedDate}</span>
+                    <div className="space-y-1">
+                        <h3 className="font-medium text-base text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                            {expense.description}
+                        </h3>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>Paid by {payerName}</span>
+                            <span className="h-1 w-1 rounded-full bg-muted-foreground/30" />
+                            <div className="flex items-center gap-1">
+                                <CalendarDays className="h-3 w-3" />
+                                <span>{formattedDate}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex flex-col items-end gap-2 min-w-[120px]">
-                    <span className="text-xl font-bold font-mono">
+                {/* Right: Amount & Splits */}
+                <div className="flex flex-col items-end gap-1">
+                    <span className="text-lg sm:text-xl font-bold font-mono tracking-tight text-foreground">
                         {formatCurrency(expense.amount)}
                     </span>
-                    <Badge variant="secondary" className="text-xs font-normal">
-                        {expense.splits.length} participants
+                    <Badge variant="outline" className="text-[10px] px-1.5 h-5 bg-background/50 text-muted-foreground border-border/50">
+                        {expense.splits.length} people
                     </Badge>
                 </div>
             </CardContent>

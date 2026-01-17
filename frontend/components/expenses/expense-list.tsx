@@ -35,7 +35,7 @@ export function ExpenseList({ expenses, participantMap, isLoading }: ExpenseList
     }
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-4">
             {expenses.map((expense, index) => (
                 <motion.div
                     key={expense.id}

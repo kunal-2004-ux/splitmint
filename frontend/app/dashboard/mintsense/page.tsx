@@ -169,11 +169,11 @@ function MintSenseContent() {
                 </div>
 
                 <div className="space-y-2">
-                    <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                    <h1 className="text-3xl font-semibold tracking-tight flex items-center gap-2">
                         <Sparkles className="h-8 w-8 text-indigo-500" />
                         MintSense AI
                     </h1>
-                    <p className="text-muted-foreground text-lg">
+                    <p className="text-sm text-muted-foreground">
                         Describe your expense in natural language, and we'll draft it for you.
                     </p>
                 </div>

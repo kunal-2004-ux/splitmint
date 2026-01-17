@@ -120,7 +120,7 @@ export default function DashboardPage() {
                     <div className="bg-muted/30 p-8 rounded-full mb-6">
                         <PlusCircle className="h-12 w-12 text-muted-foreground" />
                     </div>
-                    <h2 className="text-2xl font-bold mb-2">Welcome to SplitMint</h2>
+                    <h2 className="text-3xl font-semibold tracking-tight mb-2">Welcome to SplitMint</h2>
                     <p className="text-muted-foreground max-w-md mb-8">
                         You don't have any groups yet. Create your first group to start splitting expenses smarter.
                     </p>
@@ -154,7 +154,7 @@ export default function DashboardPage() {
                 <div className={isSwitching ? 'opacity-50 transition-opacity duration-300' : 'transition-opacity duration-300'}>
                     <section className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold tracking-tight">Overview</h2>
+                            <h2 className="text-lg font-medium tracking-tight">Overview</h2>
                             <div className="flex gap-2">
                                 <Button variant="outline" size="sm" asChild>
                                     <Link href={`/dashboard/expenses${selectedGroupId ? `?groupId=${selectedGroupId}` : ''}`}>
