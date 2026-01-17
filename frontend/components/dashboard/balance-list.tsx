@@ -28,10 +28,10 @@ export function BalanceList({ balances, isLoading }: BalanceListProps) {
                     {[1, 2, 3].map((i) => (
                         <div key={i} className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
-                                <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+                                <div className="h-8 w-8 rounded-full bg-muted/50 animate-pulse" />
+                                <div className="h-4 w-20 bg-muted/50 animate-pulse rounded" />
                             </div>
-                            <div className="h-4 w-16 bg-muted animate-pulse rounded" />
+                            <div className="h-4 w-12 bg-muted/50 animate-pulse rounded" />
                         </div>
                     ))}
                 </CardContent>

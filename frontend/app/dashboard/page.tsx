@@ -153,15 +153,15 @@ export default function DashboardPage() {
                 {/* Dashboard Content */}
                 <div className={isSwitching ? 'opacity-50 transition-opacity duration-300' : 'transition-opacity duration-300'}>
                     <section className="space-y-4">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <h2 className="text-lg font-medium tracking-tight">Overview</h2>
-                            <div className="flex gap-2">
-                                <Button variant="outline" size="sm" asChild>
+                            <div className="flex gap-2 w-full sm:w-auto">
+                                <Button variant="outline" size="sm" asChild className="flex-1 sm:flex-none">
                                     <Link href={`/dashboard/expenses${selectedGroupId ? `?groupId=${selectedGroupId}` : ''}`}>
                                         View Expenses
                                     </Link>
                                 </Button>
-                                <Button size="sm" className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 shadow-sm" asChild>
+                                <Button size="sm" className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 shadow-sm flex-1 sm:flex-none" asChild>
                                     <Link href={`/dashboard/mintsense${selectedGroupId ? `?groupId=${selectedGroupId}` : ''}`}>
                                         <span className="mr-2">✨</span> MintSense AI
                                     </Link>

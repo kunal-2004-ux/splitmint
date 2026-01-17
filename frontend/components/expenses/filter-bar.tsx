@@ -60,18 +60,21 @@ export function FilterBar({ filters, participants, onFilterChange, onClearFilter
                 </div>
 
                 {/* Date Range */}
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                    <div className="flex items-center gap-2 w-full">
+                        <Input
+                            type="date"
+                            className="bg-background/50 h-10 w-full"
+                            value={filters.from}
+                            onChange={(e) => handleInputChange('from', e.target.value)}
+                            placeholder="From"
+                        />
+                        <span className="text-muted-foreground text-sm font-medium sm:hidden">to</span>
+                    </div>
+                    <span className="text-muted-foreground text-sm font-medium hidden sm:inline">to</span>
                     <Input
                         type="date"
-                        className="bg-background/50 h-10"
-                        value={filters.from}
-                        onChange={(e) => handleInputChange('from', e.target.value)}
-                        placeholder="From"
-                    />
-                    <span className="text-muted-foreground text-sm font-medium">to</span>
-                    <Input
-                        type="date"
-                        className="bg-background/50 h-10"
+                        className="bg-background/50 h-10 w-full"
                         value={filters.to}
                         onChange={(e) => handleInputChange('to', e.target.value)}
                         placeholder="To"
@@ -100,19 +103,22 @@ export function FilterBar({ filters, participants, onFilterChange, onClearFilter
                 </div>
 
                 {/* Amount */}
-                <div className="flex items-center gap-2">
-                    <Input
-                        type="number"
-                        placeholder="Min"
-                        className="bg-background/50 h-10"
-                        value={filters.minAmount}
-                        onChange={(e) => handleInputChange('minAmount', e.target.value)}
-                    />
-                    <span className="text-muted-foreground text-sm font-medium">-</span>
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                    <div className="flex items-center gap-2 w-full">
+                        <Input
+                            type="number"
+                            placeholder="Min"
+                            className="bg-background/50 h-10 w-full"
+                            value={filters.minAmount}
+                            onChange={(e) => handleInputChange('minAmount', e.target.value)}
+                        />
+                        <span className="text-muted-foreground text-sm font-medium sm:hidden">-</span>
+                    </div>
+                    <span className="text-muted-foreground text-sm font-medium hidden sm:inline">-</span>
                     <Input
                         type="number"
                         placeholder="Max"
-                        className="bg-background/50 h-10"
+                        className="bg-background/50 h-10 w-full"
                         value={filters.maxAmount}
                         onChange={(e) => handleInputChange('maxAmount', e.target.value)}
                     />

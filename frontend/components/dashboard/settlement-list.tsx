@@ -25,7 +25,7 @@ export function SettlementList({ settlements, isLoading }: SettlementListProps) 
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {[1, 2].map(i => (
-                        <div key={i} className="h-16 w-full bg-muted animate-pulse rounded-lg" />
+                        <div key={i} className="h-16 w-full bg-muted/20 animate-pulse rounded-lg" />
                     ))}
                 </CardContent>
             </Card>
@@ -38,12 +38,19 @@ export function SettlementList({ settlements, isLoading }: SettlementListProps) 
                 <CardHeader>
                     <CardTitle>Smart Settlements</CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4">
-                        <CheckCircle2 className="h-6 w-6 text-emerald-500" />
-                    </div>
-                    <p className="text-sm text-muted-foreground">All debts are settled!</p>
-                </CardContent>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+                        <div className="h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4 ring-1 ring-emerald-500/20">
+                            <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+                        </div>
+                        <p className="text-sm font-medium text-foreground">All settled up!</p>
+                        <p className="text-xs text-muted-foreground mt-1">No pending debts in this group.</p>
+                    </CardContent>
+                </motion.div>
             </Card>
         );
     }
