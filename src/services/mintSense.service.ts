@@ -1,6 +1,8 @@
 import { geminiClient } from '../ai/gemini.client';
 import { AIServiceError } from '../ai/ai.errors';
 import { participantRepository } from '../repositories/participant.repository';
+import { summaryService } from './summary.service';
+import { balanceService } from './balance.service';
 import { assertGroupOwnership } from './helpers/ownership';
 import { ValidationError } from '../utils/errors';
 
@@ -222,6 +224,62 @@ RULES:
             draft,
             confidence: aiDraft.confidence,
             warning,
+        };
+    }
+
+    /**
+     * Generate AI-powered group summary
+     * Uses structured data from backend services only
+     */
+    async generateGroupSummary(userId: string, groupId: string) {
+        // Validate ownership
+        await assertGroupOwnership(userId, groupId);
+
+        // Fetch structured data from backend services
+        const summary = await summaryService.getGroupSummary(userId, groupId);
+        const balances = await balanceService.getGroupBalances(userId, groupId);
+
+        // Build structured data for prompt
+        const structuredData = {
+            totalSpent: summary.totalSpent,
+            balances: balances.balances.map((b) => ({
+                name: b.name,
+                net: b.netBalance,
+            })),
+            settlements: balances.settlements.map((s) => ({
+                from: s.fromName,
+                to: s.toName,
+                amount: s.amount,
+            })),
+        };
+
+        // Build prompt
+        const prompt = `Group expense data:
+${JSON.stringify(structuredData, null, 2)}
+
+Write a short, friendly summary of this group's expenses in at most two sentences. Use plain text only (no markdown, no emojis). Express amounts in rupees (₹). Do not invent any numbers or names - use only the data provided above.`;
+
+        // Call Gemini with fallback
+        let summaryText: string;
+        try {
+            summaryText = await geminiClient.generateText(prompt);
+
+            // Clean up any markdown or formatting
+            summaryText = summaryText.replace(/```/g, '').replace(/\*\*/g, '').trim();
+
+            // Limit to 2 sentences if AI generated more
+            const sentences = summaryText.match(/[^.!?]+[.!?]+/g) || [summaryText];
+            if (sentences.length > 2) {
+                summaryText = sentences.slice(0, 2).join(' ');
+            }
+        } catch (error) {
+            // Deterministic fallback if AI fails
+            const totalInRupees = Math.floor(summary.totalSpent / 100);
+            summaryText = `The group spent ₹${totalInRupees.toLocaleString('en-IN')} in total. Please check balances for settlement details.`;
+        }
+
+        return {
+            summary: summaryText,
         };
     }
 }

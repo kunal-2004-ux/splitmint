@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import { mintSenseController } from '../controllers/mintSense.controller';
 import { authenticate } from '../middlewares/auth';
 import { validate } from '../middlewares/validate';
@@ -25,6 +25,13 @@ router.post(
     '/ai/expense-draft',
     [groupIdValidation, textValidation, validate],
     mintSenseController.generateExpenseDraft.bind(mintSenseController)
+);
+
+// Generate AI Group Summary
+router.get(
+    '/ai/groups/:groupId/summary',
+    [param('groupId').isUUID().withMessage('Invalid group ID'), validate],
+    mintSenseController.generateGroupSummary.bind(mintSenseController)
 );
 
 export default router;
