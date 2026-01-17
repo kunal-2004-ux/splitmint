@@ -1,211 +1,89 @@
-# SplitMint Backend
+# SplitMint
 
-Production-ready backend for SplitMint expense-splitting application.
-
-## Tech Stack
-
-- **Runtime**: Node.js with TypeScript
-- **Framework**: Express.js
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: JWT + bcrypt
-
-## Features
-
-- ✅ User registration and login
-- ✅ JWT-based authentication
-- ✅ Secure password hashing
-- ✅ Layered architecture (routes → controllers → services → repositories)
-- ✅ Centralized error handling
-- ✅ Request validation
-- ✅ Health check endpoint
+Smart expense splitting with AI - A full-stack fintech application for managing shared expenses.
 
 ## Project Structure
 
 ```
-src/
-├── app.ts                 # Express app configuration
-├── server.ts              # Server bootstrap
-├── config/                # Configuration files
-│   ├── index.ts          # Environment config
-│   └── database.ts       # Prisma client
-├── routes/                # API routes
-│   └── auth.routes.ts
-├── controllers/           # Request handlers
-│   └── auth.controller.ts
-├── services/              # Business logic
-│   └── auth.service.ts
-├── repositories/          # Data access layer
-│   └── user.repository.ts
-├── middlewares/           # Express middlewares
-│   ├── auth.ts           # JWT authentication
-│   ├── validate.ts       # Request validation
-│   └── errorHandler.ts   # Error handling
-└── utils/                 # Utility functions
-    └── errors.ts         # Custom error classes
+splitmint/
+├── backend/          # Node.js + Express + Prisma backend
+└── frontend/         # Next.js 14 frontend
 ```
 
-## Setup Instructions
+## Backend
 
-### 1. Install Dependencies
+**Tech Stack:**
+- Node.js + Express + TypeScript
+- Prisma ORM + PostgreSQL
+- Google Gemini AI integration
+- JWT authentication
 
+**Features:**
+- User authentication and authorization
+- Group management with participants
+- Expense tracking and splitting
+- AI-powered expense drafting from natural language
+- AI-generated group summaries
+- Real-time balance calculations
+
+[Backend README](./backend/README.md)
+
+## Frontend
+
+**Tech Stack:**
+- Next.js 14 (App Router)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui components
+- Framer Motion animations
+
+**Features:**
+- Modern dark mode design
+- Landing page with hero and features
+- Dashboard with stats and group listings
+- Clean, production-grade UI
+
+[Frontend README](./frontend/README.md)
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- PostgreSQL
+- Google Gemini API key
+
+### Setup
+
+1. **Clone the repository**
 ```bash
+git clone <repository-url>
+cd splitmint
+```
+
+2. **Backend Setup**
+```bash
+cd backend
 npm install
-```
-
-### 2. Configure Environment
-
-Copy `.env.example` to `.env` and update the values:
-
-```bash
 cp .env.example .env
-```
-
-Update `DATABASE_URL` with your PostgreSQL connection string:
-
-```
-DATABASE_URL="postgresql://user:password@localhost:5432/splitmint?schema=public"
-```
-
-### 3. Setup Database
-
-Generate Prisma client and run migrations:
-
-```bash
-npm run prisma:generate
-npm run prisma:migrate
-```
-
-### 4. Run Development Server
-
-```bash
+# Edit .env with your database and API credentials
+npx prisma migrate dev
 npm run dev
 ```
 
-The server will start on `http://localhost:3000`
-
-## API Endpoints
-
-### Health Check
-
-```http
-GET /health
+3. **Frontend Setup**
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Server is healthy",
-  "timestamp": "2024-01-16T03:56:34.000Z"
-}
-```
+The backend will run on `http://localhost:3000` and the frontend on `http://localhost:3001`.
 
-### Authentication
+## Documentation
 
-#### Register
-
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "user": {
-      "id": "uuid",
-      "email": "user@example.com",
-      "createdAt": "2024-01-16T03:56:34.000Z"
-    },
-    "token": "jwt-token"
-  }
-}
-```
-
-#### Login
-
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "user": {
-      "id": "uuid",
-      "email": "user@example.com",
-      "createdAt": "2024-01-16T03:56:34.000Z"
-    },
-    "token": "jwt-token"
-  }
-}
-```
-
-#### Get Profile (Protected)
-
-```http
-GET /api/auth/profile
-Authorization: Bearer <jwt-token>
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "user": {
-      "id": "uuid",
-      "email": "user@example.com",
-      "createdAt": "2024-01-16T03:56:34.000Z"
-    }
-  }
-}
-```
-
-## Scripts
-
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint errors
-- `npm run format` - Format code with Prettier
-- `npm run prisma:generate` - Generate Prisma client
-- `npm run prisma:migrate` - Run database migrations
-- `npm run prisma:studio` - Open Prisma Studio
-
-## Security Features
-
-- Passwords are hashed using bcrypt with 10 salt rounds
-- JWT tokens for stateless authentication
-- Password hashes are never exposed in API responses
-- Input validation on all endpoints
-- Centralized error handling prevents information leakage
-
-## Next Steps
-
-This scaffold is ready for implementing business logic:
-
-- Groups management
-- Expense tracking
-- Balance calculations
-- Settlement logic
+- [Backend API Documentation](./backend/README.md)
+- [Frontend Design System](./frontend/README.md)
 
 ## License
 
-ISC
+MIT
