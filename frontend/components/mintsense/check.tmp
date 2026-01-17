@@ -1,0 +1,17 @@
+'use client';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Sparkles, Loader2 } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea'; // I assume textarea exists or I use native/shadcn
+import { cn } from '@/lib/utils';
+
+// If shadcn Textarea doesn't exist, I'll use a styled textarea here or check components first.
+// I'll assume standard shadcn textarea structure or use native.
+// User said "shadcn Card, Textarea, Button". I haven't seen `textarea.tsx` in `components/ui`.
+// I'll check `components/ui` for `textarea.tsx`.
+
+/* 
+   Since I cannot check nicely in the middle of write_to_file, I will write assuming it exists OR check first.
+   Checking first is safer.
+*/

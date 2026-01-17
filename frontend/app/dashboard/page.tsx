@@ -155,11 +155,18 @@ export default function DashboardPage() {
                     <section className="space-y-4">
                         <div className="flex items-center justify-between">
                             <h2 className="text-2xl font-bold tracking-tight">Overview</h2>
-                            <Button variant="outline" size="sm" asChild>
-                                <Link href={`/dashboard/expenses${selectedGroupId ? `?groupId=${selectedGroupId}` : ''}`}>
-                                    View Expenses
-                                </Link>
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button variant="outline" size="sm" asChild>
+                                    <Link href={`/dashboard/expenses${selectedGroupId ? `?groupId=${selectedGroupId}` : ''}`}>
+                                        View Expenses
+                                    </Link>
+                                </Button>
+                                <Button size="sm" className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 shadow-sm" asChild>
+                                    <Link href={`/dashboard/mintsense${selectedGroupId ? `?groupId=${selectedGroupId}` : ''}`}>
+                                        <span className="mr-2">✨</span> MintSense AI
+                                    </Link>
+                                </Button>
+                            </div>
                         </div>
                         <SummaryCards
                             data={dashboardData?.summary || null}
