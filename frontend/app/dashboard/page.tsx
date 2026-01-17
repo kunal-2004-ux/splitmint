@@ -1,209 +1,180 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import { ArrowLeft, Sparkles, DollarSign, Users as UsersIcon, TrendingUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Container } from "@/components/container"
-import Link from "next/link"
+import { useEffect, useState, useCallback } from 'react';
+import { useAuth } from '@/context/auth-context';
+import api from '@/lib/api';
+import { DashboardHeader } from '@/components/dashboard/dashboard-header';
+import { SummaryCards } from '@/components/dashboard/summary-cards';
+import { BalanceList } from '@/components/dashboard/balance-list';
+import { SettlementList } from '@/components/dashboard/settlement-list';
+import { Container } from '@/components/container';
+import { Loader2, PlusCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
-const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5 }
+interface Group {
+    id: string;
+    name: string;
 }
 
-const staggerContainer = {
-    animate: {
-        transition: {
-            staggerChildren: 0.1
+interface DashboardData {
+    summary: {
+        totalSpent: number;
+        youOwe: number;
+        owedToYou: number;
+    };
+    balances: Array<{
+        participantId: string;
+        name: string;
+        netBalance: number;
+    }>;
+    settlements: Array<{
+        fromName: string;
+        toName: string;
+        amount: number;
+    }>;
+}
+
+export default function DashboardPage() {
+    const { user, logout } = useAuth();
+    const [groups, setGroups] = useState<Group[]>([]);
+    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+    const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSwitching, setIsSwitching] = useState(false);
+
+    // Fetch groups on mount
+    useEffect(() => {
+        const fetchGroups = async () => {
+            try {
+                const response = await api.get('/groups');
+                // Structure: { success: true, data: { groups: [...] } }
+                const groupsList = response.data.data.groups || [];
+                setGroups(groupsList);
+
+                if (groupsList.length > 0) {
+                    setSelectedGroupId(groupsList[0].id);
+                } else {
+                    setIsLoading(false); // Stop loading if no groups
+                }
+            } catch (error) {
+                console.error('Failed to fetch groups', error);
+                setIsLoading(false);
+            }
+        };
+
+        fetchGroups();
+    }, []);
+
+    // Fetch dashboard data when selectedGroupId changes
+    const fetchDashboardData = useCallback(async (groupId: string) => {
+        if (!groupId) return;
+
+        // Use isSwitching for subsequent loads to avoid clearing UI
+        const isFirstLoad = !dashboardData;
+        if (isFirstLoad) setIsLoading(true);
+        else setIsSwitching(true);
+
+        try {
+            const response = await api.get(`/groups/${groupId}/balances`);
+            // Structure: { success: true, data: { summary, balances, settlements } }
+            setDashboardData(response.data.data);
+        } catch (error) {
+            console.error('Failed to fetch dashboard data', error);
+        } finally {
+            setIsLoading(false);
+            setIsSwitching(false);
         }
+    }, [dashboardData]);
+
+    useEffect(() => {
+        if (selectedGroupId) {
+            fetchDashboardData(selectedGroupId);
+        }
+    }, [selectedGroupId, fetchDashboardData]);
+
+    const handleGroupChange = (groupId: string) => {
+        setSelectedGroupId(groupId);
+    };
+
+    if (isLoading && !dashboardData && groups.length > 0) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-background">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
     }
-}
 
-export default function Dashboard() {
-    return (
-        <main className="min-h-screen bg-background">
-            {/* Header */}
-            <header className="border-b border-border/40">
-                <Container>
-                    <div className="flex h-16 items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                                <Sparkles className="h-5 w-5 text-primary-foreground" />
-                            </div>
-                            <span className="text-xl font-bold">SplitMint</span>
-                        </div>
-
-                        <Link href="/">
-                            <Button variant="ghost">
-                                <ArrowLeft className="mr-2 h-4 w-4" />
-                                Back to Home
-                            </Button>
-                        </Link>
+    // Empty state: No groups
+    if (!isLoading && groups.length === 0) {
+        return (
+            <>
+                <DashboardHeader
+                    userEmail={user?.email}
+                    groups={[]}
+                    selectedGroupId={null}
+                    onGroupChange={() => { }}
+                    onLogout={logout}
+                />
+                <Container className="py-20 flex flex-col items-center justify-center text-center">
+                    <div className="bg-muted/30 p-8 rounded-full mb-6">
+                        <PlusCircle className="h-12 w-12 text-muted-foreground" />
                     </div>
+                    <h2 className="text-2xl font-bold mb-2">Welcome to SplitMint</h2>
+                    <p className="text-muted-foreground max-w-md mb-8">
+                        You don't have any groups yet. Create your first group to start splitting expenses smarter.
+                    </p>
+                    <Button asChild>
+                        <Link href="/groups/new">Create Group</Link>
+                    </Button>
                 </Container>
-            </header>
+            </>
+        )
+    }
 
-            {/* Dashboard Content */}
-            <section className="py-12">
-                <Container>
-                    <motion.div
-                        variants={staggerContainer}
-                        initial="initial"
-                        animate="animate"
-                    >
-                        <motion.div variants={fadeInUp} className="mb-8">
-                            <h1 className="mb-2 text-4xl font-bold">Dashboard</h1>
-                            <p className="text-lg text-muted-foreground">
-                                Manage your groups and track expenses
-                            </p>
-                        </motion.div>
+    return (
+        <div className="min-h-screen bg-background pb-10">
+            <DashboardHeader
+                userEmail={user?.email}
+                groups={groups}
+                selectedGroupId={selectedGroupId}
+                onGroupChange={handleGroupChange}
+                onLogout={logout}
+            />
 
-                        {/* Stats Grid */}
-                        <motion.div
-                            variants={staggerContainer}
-                            className="mb-12 grid gap-6 md:grid-cols-3"
-                        >
-                            <motion.div variants={fadeInUp}>
-                                <Card className="border-border/40">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">
-                                            Total Groups
-                                        </CardTitle>
-                                        <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">3</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            Active expense groups
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
+            <Container className="py-8 space-y-8 relative">
+                {/* Loading Overlay */}
+                {isSwitching && (
+                    <div className="absolute inset-0 bg-background/50 z-10 flex items-start justify-center pt-20 backdrop-blur-[1px] transition-all duration-300">
+                        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                    </div>
+                )}
 
-                            <motion.div variants={fadeInUp}>
-                                <Card className="border-border/40">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">
-                                            Total Expenses
-                                        </CardTitle>
-                                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">$1,234</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            Across all groups
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
+                {/* Dashboard Content */}
+                <div className={isSwitching ? 'opacity-50 transition-opacity duration-300' : 'transition-opacity duration-300'}>
+                    <section>
+                        <SummaryCards
+                            data={dashboardData?.summary || null}
+                            isLoading={isLoading}
+                        />
+                    </section>
 
-                            <motion.div variants={fadeInUp}>
-                                <Card className="border-border/40">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">
-                                            Your Balance
-                                        </CardTitle>
-                                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold text-primary">+$156</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            You are owed
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        </motion.div>
-
-                        {/* Groups Section */}
-                        <motion.div variants={fadeInUp}>
-                            <div className="mb-6 flex items-center justify-between">
-                                <h2 className="text-2xl font-bold">Your Groups</h2>
-                                <Button>
-                                    Create Group
-                                </Button>
-                            </div>
-
-                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                <Card className="border-border/40 transition-colors hover:border-primary/50">
-                                    <CardHeader>
-                                        <div className="flex items-start justify-between">
-                                            <div>
-                                                <CardTitle>Roommates</CardTitle>
-                                                <CardDescription>4 participants</CardDescription>
-                                            </div>
-                                            <Badge variant="secondary">Active</Badge>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-muted-foreground">Total spent</span>
-                                                <span className="font-medium">$856</span>
-                                            </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-muted-foreground">Your balance</span>
-                                                <span className="font-medium text-primary">+$42</span>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                <Card className="border-border/40 transition-colors hover:border-primary/50">
-                                    <CardHeader>
-                                        <div className="flex items-start justify-between">
-                                            <div>
-                                                <CardTitle>Weekend Trip</CardTitle>
-                                                <CardDescription>3 participants</CardDescription>
-                                            </div>
-                                            <Badge variant="secondary">Active</Badge>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-muted-foreground">Total spent</span>
-                                                <span className="font-medium">$324</span>
-                                            </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-muted-foreground">Your balance</span>
-                                                <span className="font-medium text-primary">+$108</span>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                <Card className="border-border/40 transition-colors hover:border-primary/50">
-                                    <CardHeader>
-                                        <div className="flex items-start justify-between">
-                                            <div>
-                                                <CardTitle>Office Lunch</CardTitle>
-                                                <CardDescription>2 participants</CardDescription>
-                                            </div>
-                                            <Badge variant="secondary">Active</Badge>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-muted-foreground">Total spent</span>
-                                                <span className="font-medium">$54</span>
-                                            </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-muted-foreground">Your balance</span>
-                                                <span className="font-medium text-primary">+$6</span>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                </Container>
-            </section>
-        </main>
-    )
+                    <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+                        <div className="lg:col-span-4">
+                            <BalanceList
+                                balances={dashboardData?.balances || []}
+                                isLoading={isLoading}
+                            />
+                        </div>
+                        <div className="lg:col-span-3">
+                            <SettlementList
+                                settlements={dashboardData?.settlements || []}
+                                isLoading={isLoading}
+                            />
+                        </div>
+                    </section>
+                </div>
+            </Container>
+        </div>
+    );
 }
