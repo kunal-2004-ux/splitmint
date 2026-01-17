@@ -152,7 +152,15 @@ export default function DashboardPage() {
 
                 {/* Dashboard Content */}
                 <div className={isSwitching ? 'opacity-50 transition-opacity duration-300' : 'transition-opacity duration-300'}>
-                    <section>
+                    <section className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-2xl font-bold tracking-tight">Overview</h2>
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/dashboard/expenses${selectedGroupId ? `?groupId=${selectedGroupId}` : ''}`}>
+                                    View Expenses
+                                </Link>
+                            </Button>
+                        </div>
                         <SummaryCards
                             data={dashboardData?.summary || null}
                             isLoading={isLoading}
