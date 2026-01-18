@@ -2,7 +2,7 @@
 
 **SplitMint** is a modern, sophisticated, and AI-powered expense splitting application. It combines a professional light-themed user interface with intelligent features like natural language expense drafting and automated group summaries to make managing shared finances effortless and elegant.
 
-![Landing Page](file:///d:/splitmint/frontend/public/landing-screenshot.png) *(Note: Placeholder for actual screenshot)*
+
 
 ## 🚀 Features
 
