@@ -7,9 +7,9 @@ import { useAuth } from '@/context/auth-context';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, Sparkles, Loader2, Mail, Lock, ArrowLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { AlertCircle, Sparkles, Loader2 } from 'lucide-react';
+import { Container } from '@/components/container';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -43,156 +43,85 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="relative flex min-h-screen flex-col bg-background overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] -z-10" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[80px] -z-10" />
-
-            {/* Header */}
-            <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl py-4">
-                <div className="container px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between">
-                        <Link href="/" className="flex items-center gap-2">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-emerald-600 shadow-lg shadow-primary/20">
-                                <Sparkles className="h-5 w-5 text-white" />
-                            </div>
-                            <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">SplitMint</span>
-                        </Link>
-                        <Link href="/">
-                            <Button variant="ghost" size="sm" className="gap-2">
-                                <ArrowLeft className="h-4 w-4" />
-                                Back to Home
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
+        <div className="flex min-h-screen flex-col bg-background">
+            <header className="border-b border-border/40 py-4">
+                <Container>
+                    <Link href="/" className="flex items-center gap-2 w-fit">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                            <Sparkles className="h-5 w-5 text-primary-foreground" />
+                        </div>
+                        <span className="text-xl font-bold">SplitMint</span>
+                    </Link>
+                </Container>
             </header>
 
-            {/* Main Content */}
             <main className="flex flex-1 items-center justify-center p-4">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="w-full max-w-md"
-                >
-                    <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-xl shadow-black/5">
-                        <CardHeader className="space-y-2 pb-6">
-                            <CardTitle className="text-3xl font-bold tracking-tight">Welcome back</CardTitle>
-                            <CardDescription className="text-base">
-                                Enter your credentials to access your account
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-5">
-                                <div className="space-y-2">
-                                    <label htmlFor="email" className="text-sm font-medium">
-                                        Email
-                                    </label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            placeholder="name@example.com"
-                                            className="pl-10 h-11 bg-background/50"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            disabled={isLoading}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                        <label htmlFor="password" className="text-sm font-medium">
-                                            Password
-                                        </label>
-                                        <Link href="/forgot-password" className="text-xs text-primary hover:underline">
-                                            Forgot password?
-                                        </Link>
-                                    </div>
-                                    <div className="relative">
-                                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            placeholder="••••••••"
-                                            className="pl-10 h-11 bg-background/50"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            disabled={isLoading}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                {error && (
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        className="flex items-center gap-2 rounded-lg bg-destructive/15 p-3 text-sm text-destructive border border-destructive/20"
-                                    >
-                                        <AlertCircle className="h-4 w-4 shrink-0" />
-                                        <p>{error}</p>
-                                    </motion.div>
-                                )}
-
-                                <Button
-                                    type="submit"
-                                    className="w-full h-11 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all"
+                <Card className="w-full max-w-md border-border/40">
+                    <CardHeader className="space-y-1">
+                        <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+                        <CardDescription>
+                            Enter your email to sign in to your account
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                    Email
+                                </label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    placeholder="m@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     disabled={isLoading}
-                                >
-                                    {isLoading ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Signing in...
-                                        </>
-                                    ) : (
-                                        'Sign In'
-                                    )}
-                                </Button>
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                    Password
+                                </label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    disabled={isLoading}
+                                    required
+                                />
+                            </div>
 
-                                <div className="relative my-6">
-                                    <div className="absolute inset-0 flex items-center">
-                                        <div className="w-full border-t border-border/50" />
-                                    </div>
-                                    <div className="relative flex justify-center text-xs">
-                                        <span className="bg-card px-2 text-muted-foreground">
-                                            New to SplitMint?
-                                        </span>
-                                    </div>
+                            {error && (
+                                <div className="flex items-center gap-2 rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <p>{error}</p>
                                 </div>
+                            )}
 
-                                <Link href="/register" className="block">
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="w-full h-11 border-border/50 hover:border-primary/50"
-                                        disabled={isLoading}
-                                    >
-                                        Create an account
-                                    </Button>
-                                </Link>
-                            </form>
-                        </CardContent>
-                    </Card>
-
-                    {/* Trust indicators */}
-                    <p className="mt-6 text-center text-xs text-muted-foreground">
-                        Protected by industry-standard encryption
-                    </p>
-                </motion.div>
+                            <Button type="submit" className="w-full" disabled={isLoading}>
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Signing in...
+                                    </>
+                                ) : (
+                                    'Sign In'
+                                )}
+                            </Button>
+                        </form>
+                    </CardContent>
+                    <CardFooter className="flex flex-col gap-2">
+                        <div className="text-sm text-muted-foreground text-center">
+                            Don't have an account?{' '}
+                            <Link href="/register" className="text-primary hover:underline">
+                                Sign up
+                            </Link>
+                        </div>
+                    </CardFooter>
+                </Card>
             </main>
-
-            <style jsx global>{`
-                .bg-grid-pattern {
-                    background-image: linear-gradient(to right, rgb(128 128 128 / 0.05) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgb(128 128 128 / 0.05) 1px, transparent 1px);
-                    background-size: 60px 60px;
-                }
-            `}</style>
         </div>
     );
 }

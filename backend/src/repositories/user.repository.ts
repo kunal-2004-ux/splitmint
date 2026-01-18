@@ -1,6 +1,7 @@
 import prisma from '../config/database';
 
 export interface CreateUserData {
+    name: string;
     email: string;
     passwordHash: string;
 }
@@ -11,6 +12,7 @@ export class UserRepository {
             data,
             select: {
                 id: true,
+                name: true,
                 email: true,
                 createdAt: true,
             },
@@ -28,6 +30,7 @@ export class UserRepository {
             where: { id },
             select: {
                 id: true,
+                name: true,
                 email: true,
                 createdAt: true,
             },

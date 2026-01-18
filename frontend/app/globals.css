@@ -1,6 +1,37 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
 
 @layer base {
   :root {
@@ -27,24 +58,24 @@
   }
 
   .dark {
-    --background: 222 13% 17%;
+    --background: 217.2 32.6% 18%;
     --foreground: 210 40% 98%;
-    --card: 222 10% 22%;
+    --card: 217.2 32.6% 24%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 10% 20%;
+    --popover: 217.2 32.6% 22%;
     --popover-foreground: 210 40% 98%;
     --primary: 142.1 76.2% 45.3%;
-    --primary-foreground: 144.9 80.4% 10%;
-    --secondary: 217.2 32.6% 25.9%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217.2 32.6% 28%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 25.9%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 25.9%;
+    --muted: 217.2 32.6% 28%;
+    --muted-foreground: 215 16% 72%;
+    --accent: 217.2 32.6% 28%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 30%;
-    --input: 217.2 32.6% 25.9%;
+    --border: 217.2 32.6% 36%;
+    --input: 217.2 32.6% 24%;
     --ring: 142.1 76.2% 45.3%;
     --radius: 0.75rem;
   }

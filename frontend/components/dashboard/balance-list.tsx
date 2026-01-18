@@ -15,14 +15,15 @@ interface Balance {
 interface BalanceListProps {
     balances: Balance[];
     isLoading: boolean;
+    groupId: string | null;
 }
 
-export function BalanceList({ balances, isLoading }: BalanceListProps) {
+export function BalanceList({ balances, isLoading, groupId }: BalanceListProps) {
     if (isLoading) {
         return (
-            <Card className="border-border/40 h-full">
-                <CardHeader>
-                    <CardTitle>Group Balances</CardTitle>
+            <Card className="border-2 border-border shadow-sm rounded-3xl h-full">
+                <CardHeader className="pb-4">
+                    <CardTitle className="text-xl font-bold tracking-tight text-foreground/90">Group Balances</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {[1, 2, 3].map((i) => (

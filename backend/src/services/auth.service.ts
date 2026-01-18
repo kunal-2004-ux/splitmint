@@ -5,6 +5,7 @@ import { config } from '../config';
 import { ConflictError, UnauthorizedError, ValidationError } from '../utils/errors';
 
 export interface RegisterData {
+    name: string;
     email: string;
     password: string;
 }
@@ -18,10 +19,10 @@ export class AuthService {
     private readonly SALT_ROUNDS = 10;
 
     async register(data: RegisterData) {
-        const { email, password } = data;
+        const { name, email, password } = data;
 
-        if (!email || !password) {
-            throw new ValidationError('Email and password are required');
+        if (!name || !email || !password) {
+            throw new ValidationError('Name, email and password are required');
         }
 
         if (password.length < 6) {
@@ -36,6 +37,7 @@ export class AuthService {
         const passwordHash = await bcrypt.hash(password, this.SALT_ROUNDS);
 
         const user = await userRepository.create({
+            name,
             email,
             passwordHash,
         });

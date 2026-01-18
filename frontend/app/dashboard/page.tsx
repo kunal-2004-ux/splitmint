@@ -179,6 +179,7 @@ export default function DashboardPage() {
                             <BalanceList
                                 balances={dashboardData?.balances || []}
                                 isLoading={isLoading}
+                                groupId={selectedGroupId}
                             />
                         </div>
                         <div className="lg:col-span-3">
